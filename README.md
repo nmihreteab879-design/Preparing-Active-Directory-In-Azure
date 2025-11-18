@@ -1,81 +1,136 @@
-<h2>Deployment and Configuration Steps</h2>
+<p align="center">
+  <img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
+</p>
+
+# On-Premises Active Directory in Azure (Beginner-Friendly Explanation)
+
+This project shows how I created a small “on-premises” Active Directory environment using virtual machines in Microsoft Azure. Even though everything is in the cloud, the setup behaves the same way as a physical company network.  
+
+The goal of this lab was to understand how computers find each other, communicate privately, and use a domain controller for identity and management.
+
+## Technologies Used
+- Microsoft Azure (Virtual Machines & Networking)
+- Remote Desktop (logging into the VMs)
+- Active Directory Domain Services
+- Basic Command Prompt tools (ping, ipconfig)
+
+## Operating Systems
+- Windows Server 2022 (Domain Controller)
+- Windows 10 (Client Computer)
+
+# Overview (Beginner Friendly)
+
+Below are the major steps I completed and **why each one matters**.  
+Right after each section, you will see:  
+- **Screenshot goes here** (replace with your actual image)  
+- A simple explanation of what skill that step demonstrates
+
+This makes your GitHub clear and readable.
+
+# Step 1 — Creating the Resource Group and Virtual Network
 
 <p align="center">
-<img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
+  <!-- Replace the link below with your actual screenshot -->
+  <img src="YOUR-SCREENSHOT-1.png" />
 </p>
 
-<h1>On-premises Active Directory Deployed in the Cloud (Azure)</h1>
-This tutorial outlines the implementation of on-premises Active Directory within Azure Virtual Machines.<br />
+I started by making a **resource group** and a **virtual network**.  
+The resource group is just a folder that keeps everything organized.  
+The virtual network acts like the private “wiring” that lets the machines talk to each other inside Azure.
 
-<h2>Video Demonstration</h2>
+**Why this matters (explained simply):**  
+This step shows I understand how to set up a safe, private mini-network in the cloud. Every real company uses something like this.
 
-- ### [YouTube: How to Deploy Active Directory in Azure](https://www.youtube.com)
+# Step 2 — Creating the Domain Controller VM (DC-1) and Assigning a Static IP
 
-<h2>Environments and Technologies Used</h2>
-
-- Microsoft Azure (Virtual Machines / Compute / Networking)
-- Remote Desktop Protocol (RDP)
-- Active Directory Domain Services
-- PowerShell / Command Prompt
-
-<h2>Operating Systems Used</h2>
-
-- Windows Server 2022 (Domain Controller)
-- Windows 10 (Client Machine)
-
-<h2>High-Level Deployment and Configuration Steps</h2>
-
-- Create Resource Group and Virtual Network
-- Create a Domain Controller VM (DC-1) and assign a static private IP
-- Disable DC-1 firewall (for internal connectivity testing)
-- Create Client-1 VM and configure DNS to point to DC-1
-- Test connectivity between Client-1 and DC-1 using ping
-- Verify DNS resolution with `ipconfig /all`
-
-<h2>Deployment and Configuration Steps</h2>
-
-<p>
-<img width="630" height="547" alt="image" src="https://github.com/user-attachments/assets/4c316122-f528-4799-9331-20d4de699b90" />
+<p align="center">
+  <img src="YOUR-SCREENSHOT-2.png" />
 </p>
-<p>
-I started by creating a resource group and a virtual network in Azure. The resource group keeps all of the related components organized in one place, and the virtual network allows the virtual machines to communicate with each other privately in the cloud.
-</p>
-<br />
 
-<p>
-<img width="1534" height="932" alt="image" src="https://github.com/user-attachments/assets/9c78ddc9-51c9-4219-8670-43d2575b3255" />
-</p>
-<p>
-I then created a Windows Server 2022 virtual machine and named it DC-1. This machine will act as the domain controller in the environment. After it was created, I set its private IP address to static. This is important because the client machine needs to always be able to reach the domain controller at the same address. If the IP changed whenever the VM restarted, the client would fail to communicate with it.
-</p>
-<br />
+I created a Windows Server virtual machine called **DC-1**. This machine will later become the “domain controller,” which is like the main server that manages users and computers.
 
-<p>
-<img width="1047" height="782" alt="image" src="https://github.com/user-attachments/assets/c238827c-32b5-461c-ac55-581df69055e3" />
-</p>
-<p>
-Next, I logged into DC-1 using Remote Desktop. I went into the Windows Firewall settings and disabled the firewall for testing purposes. This step ensures that basic network communication, like ping, works between the two virtual machines. In a real production environment, the firewall would stay on and specific rules would be configured instead.
-</p>
-<br />
+I also changed its private IP address to **static** so it never changes.
 
-<p>
-<img width="795" height="888" alt="image" src="https://github.com/user-attachments/assets/b0439c04-ad27-45a5-9a2c-64e3bbf530c6" />
-</p>
-<p>
-Then I changed its DNS server settings so that it pointed to DC-1's private IP address. This is necessary because Active Directory depends on DNS to locate and communicate with the domain controller.
-</p>
-<br />
+**Why this matters:**  
+Computers need to find the domain controller every time they start. If its address changed, the whole system would break.  
+This shows I understand real-world server requirements.
 
-<p>
-<img width="799" height="885" alt="image" src="https://github.com/user-attachments/assets/5c747fde-e31b-4669-b980-460e9d8fd3fc" />
+# Step 3 — Logging Into DC-1 and Temporarily Disabling the Firewall for Testing
+
+<p align="center">
+  <img src="YOUR-SCREENSHOT-3.png" />
 </p>
-<p>
-After updating Client-1's DNS settings, I restarted the virtual machine from the Azure portal so that the network changes would apply correctly.</p>
-<br />
-<img width="858" height="729" alt="image" src="https://github.com/user-attachments/assets/54923f7f-ef4d-494f-b89e-01e26b18a171" />
+
+I connected to DC-1 using Remote Desktop and turned off the firewall temporarily. This was just to make sure the two machines could communicate while I tested the network.
+
+**Why this matters:**  
+It shows I understand how to troubleshoot network issues safely.  
+(And I also understand that firewalls stay ON in real environments.)
+
+# Step 4 — Creating the Client Machine (Client-1) and Setting Its DNS to DC-1
+
+<p align="center">
+  <img src="YOUR-SCREENSHOT-4.png" />
 </p>
-<p>
-When Client-1 came back online, I logged in and tested the connection by pinging DC-1's private IP address. The ping was successful, which showed that network communication was working. Finally, I ran "ipconfig /all" on Client-1 to confirm that its DNS server was now set to DC-1's IP address, which verified that the setup was correct.
+
+I created another virtual machine called **Client-1**, which acts like an employee’s computer. I changed its DNS setting so it points to DC-1’s private IP address.
+
+**Why this matters:**  
+Active Directory **depends on DNS**.  
+If Client-1 can’t ask DNS to locate the domain controller, nothing will work.  
+This shows I understand the relationship between DNS and Active Directory.
+
+# Step 5 — Restarting Client-1 So the New Network Settings Take Effect
+
+<p align="center">
+  <img src="YOUR-SCREENSHOT-5.png" />
+</p>
+
+After changing the DNS, I restarted Client-1 from the Azure portal to make sure the settings were fully applied.
+
+**Why this matters:**  
+Many system changes don’t apply until a restart.  
+This shows awareness of how Windows networking behaves.
+
+# Step 6 — Testing Connectivity with Ping and Checking DNS with `ipconfig /all`
+
+<p align="center">
+  <img src="YOUR-SCREENSHOT-6.png" />
+</p>
+
+Once Client-1 restarted, I tested the connection:
+
+- I pinged DC-1 → the ping succeeded  
+- I ran `ipconfig /all` → it confirmed DC-1 was now the DNS server
+
+**Why this matters:**  
+This demonstrates troubleshooting ability:
+- Can Client-1 reach DC-1?  
+- Is DNS pointing to the right place?  
+- Are the machines communicating correctly?
+
+These are real help desk and system admin skills.
+
+# Skills Demonstrated (Explained for Non-Technical People)
+
+- **Building a private network in Azure:**  
+  I created a safe, isolated environment where machines can talk securely.
+
+- **Setting up and preparing a domain controller:**  
+  This server becomes the “brain” of a company network.
+
+- **Configuring machines to communicate correctly:**  
+  I made sure each machine knew how to find and talk to the others.
+
+- **Understanding how DNS affects authentication:**  
+  DNS works like a phonebook. If the phonebook is wrong, nothing connects.
+
+- **Testing and validating network setups:**  
+  Using tools like `ping` and `ipconfig` to make sure everything works.
+
+- **Troubleshooting mindset:**  
+  I confirmed each step worked before moving on, which is exactly how real IT work is done.
+
 
 
 
