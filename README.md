@@ -1,141 +1,69 @@
-<p align="center">
-  <img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
-</p>
+Preparing Active Directory in Azure  
 
-# On-Premises Active Directory in Azure (Beginner-Friendly Explanation)
+Azure Resources Created  
+The first thing I did was create the basic pieces that the environment needs: a resource group and a virtual network.  
+The resource group keeps every part of this environment organized in one place.  
+The virtual network allows my virtual machines to talk to each other privately.
 
-This project shows how I created a small “on-premises” Active Directory environment using virtual machines in Microsoft Azure. Even though everything is in the cloud, the setup behaves the same way as a physical company network.  
+Screenshot to include: <img width="951" height="841" alt="image" src="https://github.com/user-attachments/assets/ff10dd91-03bc-4551-91dd-b15543d646ed" />
 
-The goal of this lab was to understand how computers find each other, communicate privately, and use a domain controller for identity and management.
+Why this matters:  
+This shows I can organize cloud resources correctly and set up a private network, which is essential for Active Directory to work.
 
+Domain Controller (DC-1) Setup  
+I created a Windows Server virtual machine and named it DC-1. This will become the Domain Controller. I also set its private IP address to static so it never changes.
 
-## Technologies Used
-- Microsoft Azure (Virtual Machines & Networking)
-- Remote Desktop (logging into the VMs)
-- Active Directory Domain Services
-- Basic Command Prompt tools (ping, ipconfig)
+Screenshot to include:
+<img width="1535" height="435" alt="image" src="https://github.com/user-attachments/assets/36b325e5-325f-4de7-9e8c-5d6e205fe355" />
+<img width="583" height="611" alt="image" src="https://github.com/user-attachments/assets/4a391d9e-c355-47f1-8b54-75749ec3bcaf" />
 
-## Operating Systems
-- Windows Server 2022 (Domain Controller)
-- Windows 10 (Client Computer)
+Why this matters:  
+The domain controller must always keep the same IP address because every computer in the domain depends on it.
 
+Firewall Adjustments for Testing  
+After logging into DC-1 through Remote Desktop, I turned off the firewall temporarily. This is only for early testing so that basic communication works with no interference. In a real environment, the firewall stays on, but this lab focuses on building the foundation first.
 
-# Overview (Beginner Friendly)
+Screenshot to include:
+- Windows Firewall settings page on DC-1 showing it turned off
 
-Below are the major steps I completed and **why each one matters**.  
-Right after each section, you will see:  
-- **Screenshot goes here** (replace with your actual image)  
-- A simple explanation of what skill that step demonstrates
+Why this matters:  
+This confirms the environment is allowed to send simple network traffic while testing connectivity.
 
-This makes your GitHub clear and readable.
+Client Machine (Client-1) Setup  
+Next, I created another virtual machine running Windows 10 and named it Client-1. I changed the DNS setting so that this computer would use DC-1 as its DNS server. Active Directory depends heavily on DNS, so this step is required.
 
+Screenshot to include:
+- VM creation page for Client-1  
+- DNS settings pointing to DC-1’s private IP
 
-# Step 1 — Creating the Resource Group and Virtual Network
+Why this matters:  
+Active Directory will not work unless the client computer knows how to find the domain controller through DNS.
 
-<p align="center">
-  <!-- Replace the link below with your actual screenshot -->
-  <img src="YOUR-SCREENSHOT-1.png" />
-</p>
+Restarting Client-1  
+After changing DNS, I restarted Client-1 from the Azure portal so the network changes would fully apply.
 
-I started by making a **resource group** and a **virtual network**.  
-The resource group is just a folder that keeps everything organized.  
-The virtual network acts like the private “wiring” that lets the machines talk to each other inside Azure.
+Screenshot to include:
+- Azure VM restart confirmation screen
 
-**Why this matters (explained simply):**  
-This step shows I understand how to set up a safe, private mini-network in the cloud. Every real company uses something like this.
+Why this matters:  
+Restarting ensures the new DNS settings are active.
 
+Connectivity and DNS Testing  
+When Client-1 came back online, I logged in and tested communication between the two machines. First, I used the “ping” command to see if Client-1 could reach DC-1’s private IP. Then I ran “ipconfig /all” to confirm that Client-1 was using DC-1 as its DNS server.
 
-# Step 2 — Creating the Domain Controller VM (DC-1) and Assigning a Static IP
+Screenshot to include:
+- Command Prompt on Client-1 showing a successful ping to DC-1  
+- Command Prompt showing “ipconfig /all” with DNS set to DC-1’s IP
 
-<p align="center">
-  <img src="YOUR-SCREENSHOT-2.png" />
-</p>
+Why this matters:  
+This proves that the network and DNS are set up correctly, which is required before Active Directory can be fully installed and joined.
 
-I created a Windows Server virtual machine called **DC-1**. This machine will later become the “domain controller,” which is like the main server that manages users and computers.
+Skills Demonstrated (explained in simple terms)  
+- Setting up a private network so computers can talk to each other in the cloud  
+- Configuring a server to act as the “main controller” for an organization  
+- Adjusting network and DNS settings so machines can locate the controller  
+- Using basic troubleshooting tools like ping and ipconfig to verify everything works  
+- Understanding the foundational steps needed before installing Active Directory
 
-I also changed its private IP address to **static** so it never changes.
-
-**Why this matters:**  
-Computers need to find the domain controller every time they start. If its address changed, the whole system would break.  
-This shows I understand real-world server requirements.
-
-
-# Step 3 — Logging Into DC-1 and Temporarily Disabling the Firewall for Testing
-
-<p align="center">
-  <img src="YOUR-SCREENSHOT-3.png" />
-</p>
-
-I connected to DC-1 using Remote Desktop and turned off the firewall temporarily. This was just to make sure the two machines could communicate while I tested the network.
-
-**Why this matters:**  
-It shows I understand how to troubleshoot network issues safely.  
-(And I also understand that firewalls stay ON in real environments.)
-
-
-# Step 4 — Creating the Client Machine (Client-1) and Setting Its DNS to DC-1
-
-<p align="center">
-  <img src="YOUR-SCREENSHOT-4.png" />
-</p>
-
-I created another virtual machine called **Client-1**, which acts like an employee’s computer. I changed its DNS setting so it points to DC-1’s private IP address.
-
-**Why this matters:**  
-Active Directory **depends on DNS**.  
-If Client-1 can’t ask DNS to locate the domain controller, nothing will work.  
-This shows I understand the relationship between DNS and Active Directory.
-
-
-# Step 5 — Restarting Client-1 So the New Network Settings Take Effect
-
-<p align="center">
-  <img src="YOUR-SCREENSHOT-5.png" />
-</p>
-
-After changing the DNS, I restarted Client-1 from the Azure portal to make sure the settings were fully applied.
-
-**Why this matters:**  
-Many system changes don’t apply until a restart.  
-This shows awareness of how Windows networking behaves.
-
-
-# Step 6 — Testing Connectivity with Ping and Checking DNS with `ipconfig /all`
-
-<p align="center">
-  <img src="YOUR-SCREENSHOT-6.png" />
-</p>
-
-Once Client-1 restarted, I tested the connection:
-
-- I pinged DC-1 → the ping succeeded  
-- I ran `ipconfig /all` → it confirmed DC-1 was now the DNS server
-
-**Why this matters:**  
-This demonstrates troubleshooting ability:
-- Can Client-1 reach DC-1?  
-- Is DNS pointing to the right place?  
-- Are the machines communicating correctly?
-
-These are real help desk and system admin skills.
-
-
-# Skills Demonstrated (Explained for Non-Technical People)
-
-- **Building a private network in Azure:**  
-  I created a safe, isolated environment where machines can talk securely.
-
-- **Setting up and preparing a domain controller:**  
-  This server becomes the “brain” of a company network.
-
-- **Configuring machines to communicate correctly:**  
-  I made sure each machine knew how to find and talk to the others.
-
-- **Understanding how DNS affects authentication:**  
-  DNS works like a phonebook. If the phonebook is wrong, nothing connects.
-
-- **Testing and validating network setups:**  
-  Using tools like `ping` and `ipconfig` to make sure everything works.
-
-- **Troubleshooting mindset:**  
-  I confirmed each step worked before moving on, which is exactly how real IT work is done.
+Summary  
+This project shows that I understand how to build the core pieces of an Active Directory environment from scratch in Azure. These skills are used in real IT jobs when creating test environments, supporting hybrid cloud networks, or preparing new systems for employees.
