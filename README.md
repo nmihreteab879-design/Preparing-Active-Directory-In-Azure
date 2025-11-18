@@ -8,6 +8,7 @@ This project shows how I created a small “on-premises” Active Directory envi
 
 The goal of this lab was to understand how computers find each other, communicate privately, and use a domain controller for identity and management.
 
+
 ## Technologies Used
 - Microsoft Azure (Virtual Machines & Networking)
 - Remote Desktop (logging into the VMs)
@@ -18,6 +19,7 @@ The goal of this lab was to understand how computers find each other, communicat
 - Windows Server 2022 (Domain Controller)
 - Windows 10 (Client Computer)
 
+
 # Overview (Beginner Friendly)
 
 Below are the major steps I completed and **why each one matters**.  
@@ -26,6 +28,7 @@ Right after each section, you will see:
 - A simple explanation of what skill that step demonstrates
 
 This makes your GitHub clear and readable.
+
 
 # Step 1 — Creating the Resource Group and Virtual Network
 
@@ -41,6 +44,7 @@ The virtual network acts like the private “wiring” that lets the machines ta
 **Why this matters (explained simply):**  
 This step shows I understand how to set up a safe, private mini-network in the cloud. Every real company uses something like this.
 
+
 # Step 2 — Creating the Domain Controller VM (DC-1) and Assigning a Static IP
 
 <p align="center">
@@ -55,6 +59,7 @@ I also changed its private IP address to **static** so it never changes.
 Computers need to find the domain controller every time they start. If its address changed, the whole system would break.  
 This shows I understand real-world server requirements.
 
+
 # Step 3 — Logging Into DC-1 and Temporarily Disabling the Firewall for Testing
 
 <p align="center">
@@ -66,6 +71,7 @@ I connected to DC-1 using Remote Desktop and turned off the firewall temporarily
 **Why this matters:**  
 It shows I understand how to troubleshoot network issues safely.  
 (And I also understand that firewalls stay ON in real environments.)
+
 
 # Step 4 — Creating the Client Machine (Client-1) and Setting Its DNS to DC-1
 
@@ -80,6 +86,7 @@ Active Directory **depends on DNS**.
 If Client-1 can’t ask DNS to locate the domain controller, nothing will work.  
 This shows I understand the relationship between DNS and Active Directory.
 
+
 # Step 5 — Restarting Client-1 So the New Network Settings Take Effect
 
 <p align="center">
@@ -91,6 +98,7 @@ After changing the DNS, I restarted Client-1 from the Azure portal to make sure 
 **Why this matters:**  
 Many system changes don’t apply until a restart.  
 This shows awareness of how Windows networking behaves.
+
 
 # Step 6 — Testing Connectivity with Ping and Checking DNS with `ipconfig /all`
 
@@ -111,6 +119,7 @@ This demonstrates troubleshooting ability:
 
 These are real help desk and system admin skills.
 
+
 # Skills Demonstrated (Explained for Non-Technical People)
 
 - **Building a private network in Azure:**  
@@ -130,9 +139,3 @@ These are real help desk and system admin skills.
 
 - **Troubleshooting mindset:**  
   I confirmed each step worked before moving on, which is exactly how real IT work is done.
-
-
-
-
-
-
